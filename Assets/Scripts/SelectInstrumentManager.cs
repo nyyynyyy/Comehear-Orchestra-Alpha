@@ -51,5 +51,6 @@ public class SelectInstrumentManager : MonoBehaviour {
         }
 
         SceneManager.LoadScene("Room");
+        SocketManager.Socket.Emit("selinstrument", Global._type.ToString());
     }
 }

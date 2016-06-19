@@ -15,6 +15,7 @@ public class TitleManager : MonoBehaviour {
         {
             Global._name = _name.text.ToString();
             SceneManager.LoadScene("SelectInstrument");
+            SocketManager.Socket.Emit("setname", Global._name);
         }
         else
         {
