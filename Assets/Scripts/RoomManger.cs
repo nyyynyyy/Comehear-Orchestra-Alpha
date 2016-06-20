@@ -39,17 +39,21 @@ public class UserParser
     public static List<User> users = new List<User>();
 
     public UserParser(string str)
-    {
+	{
         foreach (string data in str.Split('\n'))
         {
+			if (data.Equals (""))	// 마지막 데이터라면
+				break;
             string[] elements = data.Split('|');
 
-            string name = elements[0];
-            InstrumentType instrument = fromString(elements[1]);
-            bool isOwner = Convert.ToBoolean(elements[2]);
+            string name = elements[0];								// 이름
+            InstrumentType instrument = fromString(elements[1]);	// 악기
+            bool isOwner = Convert.ToBoolean(elements[2]);			// 방장 여부
 
             users.Add(new User(name, instrument, isOwner));
         }
+
+		RoomManger.GetInstance ().isUpdate = true;
     }
 
     private InstrumentType fromString(string str)
@@ -70,6 +74,8 @@ public class UserParser
 
 public class RoomManger : MonoBehaviour {
 
+	private static RoomManger instance;
+
     public GameObject _unit;
     public GameObject _canvas;
 
@@ -77,11 +83,11 @@ public class RoomManger : MonoBehaviour {
 
     private int _index;
 
-    private int userLength = 0;
-    private bool updateUsersData = false;
+	public bool isUpdate = false;
 
     void Awake()
     {
+		instance = this;
     }
 
 	// Use this for initialization
@@ -92,24 +98,27 @@ public class RoomManger : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (UserParser.users.ToArray().Length != 0)
-        {
-            Debug.Log("dsaf");
-            ClearUnits();
+		if (isUpdate) {
+			UpdateUserList ();
+			isUpdate = !isUpdate;
+		}
+	}
 
-            foreach (User user in UserParser.users.ToArray())
-            {
-                string name = user.GetName();
-                InstrumentType instrument = user.GetInstrument();
-                bool isOwner = user.IsOwner();
+	public void UpdateUserList() {
+		ClearUnits();
 
-                if (isOwner)
-                    CreateUnit("악장", name, instrument);
-                else
-                    CreateUnit(name, instrument);
-            }
-            UserParser.users.Clear();
-        }
+		foreach (User user in UserParser.users.ToArray())
+		{
+			string name = user.GetName();
+			InstrumentType instrument = user.GetInstrument();
+			bool isOwner = user.IsOwner();
+
+			if (isOwner)
+				CreateUnit("악장", name, instrument);
+			else
+				CreateUnit(name, instrument);
+		}
+		UserParser.users.Clear();
 	}
 
 
@@ -174,4 +183,8 @@ public class RoomManger : MonoBehaviour {
         Debug.Log(Global._type + " 잠시후 입장합니다.");
         SceneManager.LoadScene(Global._type.ToString());
     }
+
+	public static RoomManger GetInstance() {
+		return instance;
+	}
 }
