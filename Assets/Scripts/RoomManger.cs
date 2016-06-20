@@ -165,8 +165,9 @@ public class RoomManger : MonoBehaviour {
         foreach (GameObject gameObject in notes)
         {
             Destroy(gameObject);
-            _index = 0;
         }
+		_index = 0;
+		notes.Clear ();
     }
 
     private Vector3 IndexToPostion(int index)
