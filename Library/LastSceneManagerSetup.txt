@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Room/Room.unity
+- path: Assets/Scenes/Room/Timpani.unity
   isLoaded: 1
   isActive: 1
